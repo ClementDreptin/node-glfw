@@ -1,31 +1,54 @@
 #include "StdIncludes.h"
 #include <napi.h>
 
-void Print(const Napi::CallbackInfo& info)
+#define GLFW_INCLUDE_NONE
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+void Run(const Napi::CallbackInfo& info)
 {
 	Napi::Env env = info.Env();
 
-	if (info.Length() < 1)
+	if (info.Length() > 0)
 	{
-		Napi::TypeError::New(env, "No argument provided").ThrowAsJavaScriptException();
+		Napi::TypeError::New(env, "run does not take any argument").ThrowAsJavaScriptException();
 		return;
 	}
 
-	if (!info[0].IsString())
+	GLFWwindow* window;
+
+	if (!glfwInit())
+		return;
+
+	window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+
+	if (!window)
 	{
-		Napi::TypeError::New(env, "Argument is not a string").ThrowAsJavaScriptException();
+		glfwTerminate();
 		return;
 	}
 
-	std::string text = info[0].As<Napi::String>().Utf8Value();
+	glfwMakeContextCurrent(window);
 
-	std::cout << text << std::endl;
+	gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+
+	while (!glfwWindowShouldClose(window))
+	{
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		glfwSwapBuffers(window);
+
+		glfwPollEvents();
+	}
+
+	glfwTerminate();
+	return;
 }
 
 Napi::Object Init(Napi::Env env, Napi::Object exports)
 {
-	exports.Set(Napi::String::New(env, "print"),
-				Napi::Function::New(env, Print));
+	exports.Set(Napi::String::New(env, "run"),
+				Napi::Function::New(env, Run));
 	return exports;
 }
 
