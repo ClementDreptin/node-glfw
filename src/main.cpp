@@ -1,4 +1,3 @@
-#include "StdIncludes.h"
 #include <napi.h>
 
 #define GLFW_INCLUDE_NONE
