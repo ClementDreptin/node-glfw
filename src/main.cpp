@@ -1,51 +1,22 @@
 #include <napi.h>
 
-#define GLFW_INCLUDE_NONE
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "Core/App.h"
 
 void Run(const Napi::CallbackInfo& info)
 {
-	Napi::Env env = info.Env();
+	std::string appName = "";
+	if (info.Length() == 1 && info[0].IsString())
+		appName = info[0].ToString();
+	
+	auto app = new App(appName);
 
-	if (info.Length() > 0)
-	{
-		Napi::TypeError::New(env, "run does not take any argument").ThrowAsJavaScriptException();
-		return;
-	}
+	app->Run();
 
-	GLFWwindow* window;
-
-	if (!glfwInit())
-		return;
-
-	window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-
-	if (!window)
-	{
-		glfwTerminate();
-		return;
-	}
-
-	glfwMakeContextCurrent(window);
-
-	gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-
-	while (!glfwWindowShouldClose(window))
-	{
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		glfwSwapBuffers(window);
-
-		glfwPollEvents();
-	}
-
-	glfwTerminate();
-	return;
+	delete app;
 }
 
 Napi::Object Init(Napi::Env env, Napi::Object exports)
-{
+{	
 	exports.Set(Napi::String::New(env, "run"),
 				Napi::Function::New(env, Run));
 	return exports;

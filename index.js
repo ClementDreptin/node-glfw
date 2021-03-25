@@ -1,3 +1,3 @@
 const nodeGLFW = require('bindings')('node-glfw');;
 
-nodeGLFW.run();
+nodeGLFW.run("my app");
