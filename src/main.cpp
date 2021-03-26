@@ -18,6 +18,7 @@ void Run(const Napi::CallbackInfo& info)
 	auto app = new App(info.Env(), appName);
 	app->SetMousePressedCallback(config.Get("onMousePressed").As<Napi::Function>());
 	app->SetMouseMovedCallback(config.Get("onMouseMoved").As<Napi::Function>());
+	app->SetKeyPressedCallback(config.Get("onKeyPressed").As<Napi::Function>());
 
 	app->Run();
 

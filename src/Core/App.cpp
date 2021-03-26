@@ -37,6 +37,7 @@ void App::OnEvent(Event& event)
 	dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(App::OnWindowClose));
 	dispatcher.Dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(App::OnMousePressed));
 	dispatcher.Dispatch<MouseMovedEvent>(BIND_EVENT_FN(App::OnMouseMoved));
+	dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(App::OnKeyPressed));
 }
 
 bool App::OnMousePressed(MouseButtonPressedEvent& event)
@@ -57,6 +58,17 @@ bool App::OnMouseMoved(MouseMovedEvent& event)
 	object.Set("y", event.GetY());
 
 	m_MouseMovedCallback.Call(m_Env.Global(), { object });
+	return true;
+}
+
+bool App::OnKeyPressed(KeyPressedEvent& event)
+{
+	Napi::Object object = Napi::Object::New(m_Env);
+	object.Set("name", event.GetName());
+	object.Set("keyCode", event.GetKeyCode());
+	object.Set("repeatCount", event.GetRepeatCount());
+
+	m_KeyPressedCallback.Call(m_Env.Global(), { object });
 	return true;
 }
 

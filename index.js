@@ -7,6 +7,9 @@ const config = {
 	},
 	onMouseMoved(event) {
 		console.dir(event);
+	},
+	onKeyPressed(event) {
+		console.dir(event);
 	}
 }
 
