@@ -4,7 +4,8 @@
 
 App* App::s_Instance = nullptr;
 
-App::App(const std::string& name)
+App::App(Napi::Env env, const std::string& name)
+	: m_Env(env)
 {
 	if (s_Instance)
 	{
@@ -34,6 +35,29 @@ void App::OnEvent(Event& event)
 {
 	EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(App::OnWindowClose));
+	dispatcher.Dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(App::OnMousePressed));
+	dispatcher.Dispatch<MouseMovedEvent>(BIND_EVENT_FN(App::OnMouseMoved));
+}
+
+bool App::OnMousePressed(MouseButtonPressedEvent& event)
+{
+	Napi::Object object = Napi::Object::New(m_Env);
+	object.Set("name", event.GetName());
+	object.Set("button", event.GetMouseButton());
+	
+	m_MousePressedCallback.Call(m_Env.Global(), { object });
+	return true;
+}
+
+bool App::OnMouseMoved(MouseMovedEvent& event)
+{
+	Napi::Object object = Napi::Object::New(m_Env);
+	object.Set("name", event.GetName());
+	object.Set("x", event.GetX());
+	object.Set("y", event.GetY());
+
+	m_MouseMovedCallback.Call(m_Env.Global(), { object });
+	return true;
 }
 
 bool App::OnWindowClose(WindowCloseEvent& event)

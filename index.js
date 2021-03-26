@@ -1,3 +1,13 @@
 const nodeGLFW = require('bindings')('node-glfw');;
 
-nodeGLFW.run("my app");
+const config = {
+	name: "my app",
+	onMousePressed(event) {
+		console.dir(event);
+	},
+	onMouseMoved(event) {
+		console.dir(event);
+	}
+}
+
+nodeGLFW.run(config);
