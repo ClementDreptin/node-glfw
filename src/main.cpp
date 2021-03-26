@@ -19,6 +19,8 @@ void Run(const Napi::CallbackInfo& info)
 	app->SetMousePressedCallback(config.Get("onMousePressed").As<Napi::Function>());
 	app->SetMouseMovedCallback(config.Get("onMouseMoved").As<Napi::Function>());
 	app->SetKeyPressedCallback(config.Get("onKeyPressed").As<Napi::Function>());
+	app->SetWindowResizedCallback(config.Get("onWindowResized").As<Napi::Function>());
+	app->SetWindowClosedCallback(config.Get("onWindowClosed").As<Napi::Function>());
 
 	app->Run();
 

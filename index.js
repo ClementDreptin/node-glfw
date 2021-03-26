@@ -10,6 +10,12 @@ const config = {
 	},
 	onKeyPressed(event) {
 		console.dir(event);
+	},
+	onWindowResized(event) {
+		console.dir(event);
+	},
+	onWindowClosed(event) {
+		console.dir(event);
 	}
 }
 

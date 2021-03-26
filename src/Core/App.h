@@ -24,6 +24,8 @@ public:
 	inline void SetMousePressedCallback(Napi::Function callback) { m_MousePressedCallback = callback; }
 	inline void SetMouseMovedCallback(Napi::Function callback) { m_MouseMovedCallback = callback; }
 	inline void SetKeyPressedCallback(Napi::Function callback) { m_KeyPressedCallback = callback; }
+	inline void SetWindowResizedCallback(Napi::Function callback) { m_WindowResizedCallback = callback; }
+	inline void SetWindowClosedCallback(Napi::Function callback) { m_WindowClosedCallback = callback; }
 
 	void Close();
 private:
@@ -35,12 +37,14 @@ private:
 	Napi::Function m_MousePressedCallback;
 	Napi::Function m_MouseMovedCallback;
 	Napi::Function m_KeyPressedCallback;
+	Napi::Function m_WindowResizedCallback;
+	Napi::Function m_WindowClosedCallback;
 
 	static App* s_Instance;
 
 	bool OnMousePressed(MouseButtonPressedEvent& event);
 	bool OnMouseMoved(MouseMovedEvent& event);
 	bool OnKeyPressed(KeyPressedEvent& event);
-	bool OnWindowClose(WindowCloseEvent& event);
-	bool OnWindowResize(WindowResizeEvent& event);
+	bool OnWindowResized(WindowResizeEvent& event);
+	bool OnWindowClosed(WindowCloseEvent& event);
 };

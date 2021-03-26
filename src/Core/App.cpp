@@ -34,10 +34,11 @@ void App::Run()
 void App::OnEvent(Event& event)
 {
 	EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(App::OnWindowClose));
 	dispatcher.Dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(App::OnMousePressed));
 	dispatcher.Dispatch<MouseMovedEvent>(BIND_EVENT_FN(App::OnMouseMoved));
 	dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(App::OnKeyPressed));
+	dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(App::OnWindowResized));
+	dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(App::OnWindowClosed));
 }
 
 bool App::OnMousePressed(MouseButtonPressedEvent& event)
@@ -72,21 +73,30 @@ bool App::OnKeyPressed(KeyPressedEvent& event)
 	return true;
 }
 
-bool App::OnWindowClose(WindowCloseEvent& event)
-{
-	Close();
-	return true;
-}
-
-bool App::OnWindowResize(WindowResizeEvent& event)
+bool App::OnWindowResized(WindowResizeEvent& event)
 {
 	if (event.GetWidth() == 0 || event.GetHeight() == 0)
-	{
 		m_Minimized = true;
-		return false;
-	}
 
 	m_Minimized = false;
 
-	return false;
+	Napi::Object object = Napi::Object::New(m_Env);
+	object.Set("name", event.GetName());
+	object.Set("width", event.GetWidth());
+	object.Set("height", event.GetHeight());
+
+	m_WindowResizedCallback.Call(m_Env.Global(), { object });
+
+	return true;
+}
+
+bool App::OnWindowClosed(WindowCloseEvent& event)
+{
+	Napi::Object object = Napi::Object::New(m_Env);
+	object.Set("name", event.GetName());
+
+	m_WindowClosedCallback.Call(m_Env.Global(), { object });
+
+	Close();
+	return true;
 }
